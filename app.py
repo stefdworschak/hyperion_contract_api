@@ -30,42 +30,52 @@ def api():
 
     Returns a JSON object
     """
-    data = json.loads(request.form.get("data"))
-    user = data.get('user')
-    hashes = data.get('hashes')
-    action = data.get('action')
-    abi, bytecode = get_abi_bytecode(CONTRACT_NAME)
-    contract = EthContract(
-            node_address=NODE_ADDRESS, contract_address=CONTRACT_ADDRESS, 
-            abi=abi, bytecode=bytecode, already_deployed=True, provider='ipc')
-    status = 200
-    if action =="addDocument":
-        print("Add Document")
-        resp = contract.send(function='addDocument', attrs=[user, hashes[0]], num_attr=2)
-        data_type = "add"
-    elif action == "validateOne":
-        print("Validate One")
-        resp = contract.call(function='validateOne', attrs=[user, hashes[0]], num_attr=2)
-        data_type = "validate"
-    elif action == "validateMultiple":
-        print("Validate Multiple")
-        resp = []
-        for h in hashes:
-            r = contract.call(function='validateOne', attrs=[user, h], num_attr=2)
-            resp.append(r)
-        data_type = "validate"
-    else:
-        print("Wrong Action")
+    try:
+        data = json.loads(request.form.get("data"))
+        user = data.get('user')
+        hashes = data.get('hashes')
+        action = data.get('action')
+        abi, bytecode = get_abi_bytecode(CONTRACT_NAME)
+        contract = EthContract(
+                node_address=NODE_ADDRESS, contract_address=CONTRACT_ADDRESS, 
+                abi=abi, bytecode=bytecode, already_deployed=True, provider='ipc')
+        status = 200
+        if action == "addDocument":
+            print("Add Document")
+            resp = contract.send(function='addDocument', attrs=[user, hashes[0]], num_attr=2)
+            data_type = "add"
+        elif action == "addMultiple":
+            print("Add Multiple Documents")
+            for h  in hashes:
+                resp = contract.send(function='addDocument', attrs=[user, h], num_attr=2)
+            data_type = "add"
+        elif action == "validateOne":
+            print("Validate One")
+            resp = contract.call(function='validateOne', attrs=[user, hashes[0]], num_attr=2)
+            data_type = "validate"
+        elif action == "validateMultiple":
+            print("Validate Multiple")
+            resp = []
+            for h in hashes:
+                r = contract.call(function='validateOne', attrs=[user, h], num_attr=2)
+                resp.append(r)
+            data_type = "validate"
+        else:
+            print("Wrong Action")
+            status = 505
+            resp = "An unexpected error occurred"
+            data_type = "error"
+    except Exception as e:
         status = 505
-        resp = "An unexpected error occurred"
         data_type = "error"
+        resp = str(e)
 
     response_item = {
         "status": status,
         "data_type": data_type,
         "data" :resp
     }
-
+    print(response_item)
     return json.dumps(response_item)
 
 
