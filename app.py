@@ -10,7 +10,7 @@ from flask import Flask, render_template, jsonify, request
 
 import env_vars
 
-from logic.contract_helper import EthContract, get_abi_bytecode, compile_contract, to_json
+from logic_module.contract_helper import EthContract, get_abi_bytecode, compile_contract, to_json
 
 CONTRACT_NAME = 'Validator'
 NODE_ADDRESS = os.environ.get('IPCProvider', 'No Value Set')

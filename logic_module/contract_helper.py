@@ -146,11 +146,11 @@ def from_json(contract_name=None):
 
 
 def get_abi(contract):
-    return json.loads(contract['contracts'][f'/home/pi/hyperion_contract_api/logic/contracts/sol/{CONTRACT_NAME}.sol'][CONTRACT_NAME]['metadata'])['output']['abi']
+    return json.loads(contract['contracts'][f'/home/pi/hyperion_contract_api/logic_module/contracts/sol/{CONTRACT_NAME}.sol'][CONTRACT_NAME]['metadata'])['output']['abi']
 
 
 def get_bytecode(contract):
-    return contract['contracts'][f'/home/pi/hyperion_contract_api/logic/contracts/sol/{CONTRACT_NAME}.sol'][CONTRACT_NAME]['evm']['bytecode']['object']
+    return contract['contracts'][f'/home/pi/hyperion_contract_api/logic_module/contracts/sol/{CONTRACT_NAME}.sol'][CONTRACT_NAME]['evm']['bytecode']['object']
 
 
 def get_abi_bytecode(contract_name):
